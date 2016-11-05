@@ -1,54 +1,41 @@
 import pygame
 
 pygame.init()
-gdisplay = pygame.display.set_mode((1000,800))
+gdisplay = pygame.display.set_mode((1275,800))
 white = (255,255,255)
 black = (0,0,0)
 red = (200,0,0)
 lightred = (250,0,0)
 clicked = []
 clock = pygame.time.Clock()
+
 class keyboard(pygame.sprite.Sprite):
     def __init__(self):
             super().__init__()
-            pygame.draw.rect(gdisplay, white, (180,100,50,100))
-            pygame.draw.rect(gdisplay, black, (180,100,50,100), 1)
-            pygame.draw.rect(gdisplay, white, (230,100,50,100))
-            pygame.draw.rect(gdisplay, black, (230,100,50,100), 1)
-            pygame.draw.rect(gdisplay, white, (280,100,50,100))
-            pygame.draw.rect(gdisplay, black, (280,100,50,100), 1)
-            pygame.draw.rect(gdisplay, white, (330,100,50,100))
-            pygame.draw.rect(gdisplay, black, (330,100,50,100), 1)
-            pygame.draw.rect(gdisplay, white, (380,100,50,100))
-            pygame.draw.rect(gdisplay, black, (380,100,50,100), 1)
-            pygame.draw.rect(gdisplay, white, (430,100,50,100))
-            pygame.draw.rect(gdisplay, black, (430,100,50,100), 1)
-            pygame.draw.rect(gdisplay, white, (480,100,50,100))
-            pygame.draw.rect(gdisplay, black, (480,100,50,100), 1)
-            pygame.draw.rect(gdisplay, white, (530,100,50,100))
-            pygame.draw.rect(gdisplay, black, (530,100,50,100), 1)
-            pygame.draw.rect(gdisplay, white, (580,100,50,100))
-            pygame.draw.rect(gdisplay, black, (580,100,50,100), 1)
-            pygame.draw.rect(gdisplay, white, (630,100,50,100))
-            pygame.draw.rect(gdisplay, black, (630,100,50,100), 1)
-            pygame.draw.rect(gdisplay, white, (680,100,50,100))
-            pygame.draw.rect(gdisplay, black, (680,100,50,100), 1)
-            pygame.draw.rect(gdisplay, white, (730,100,50,100))
-            pygame.draw.rect(gdisplay, black, (730,100,50,100), 1)
-            pygame.draw.rect(gdisplay, white, (780,100,50,100))
-            pygame.draw.rect(gdisplay, black, (780,100,50,100), 1)
-            pygame.draw.rect(gdisplay, white, (830,100,50,100))
-            pygame.draw.rect(gdisplay, black, (830,100,50,100), 1)
-            pygame.draw.rect(gdisplay, black, (220,100,30,55))
-            pygame.draw.rect(gdisplay, black, (270,100,30,55))
-            pygame.draw.rect(gdisplay, black, (370, 100, 30,55))
-            pygame.draw.rect(gdisplay, black, (420,100,30,55))
-            pygame.draw.rect(gdisplay, black, (470, 100, 30,55))
-            pygame.draw.rect(gdisplay, black, (570,100,30,55))
-            pygame.draw.rect(gdisplay, black, (670,100,30,55))
-            pygame.draw.rect(gdisplay, black, (770, 100, 30,55))
-            pygame.draw.rect(gdisplay, black, (820,100,30,55))
-            pygame.draw.rect(gdisplay, black, (620, 100, 30,55))
+
+            whiteKeyLeft= 180
+            whiteKeyRight= 831
+            whiteWidth = 50
+            whiteLength = 100
+            blackKeyLeft = 220
+            numOctaves = 3
+            #draw white keys with borders
+            for i in range (whiteKeyLeft, whiteKeyRight, +50):
+                pygame.draw.rect(gdisplay, white, (i,100,50,100))
+                pygame.draw.rect(gdisplay, black, (i,100,50,100), 1)
+            
+            #draw black keys - each outer loop draws on octave
+            for i in range (0, numOctaves):  
+                for j in range (blackKeyLeft,blackKeyLeft + 51, +50): # draw group of 2 black keys
+                    print("j is ", j)
+                    pygame.draw.rect(gdisplay, black, (j,100,30,55))
+                blackKeyLeft += 150
+                for k in range (blackKeyLeft, blackKeyLeft + 101, +50): #draw group of 3 black keys
+                    print("k is ", k)
+                    pygame.draw.rect(gdisplay, black, (k,100,30,55))
+                blackKeyLeft += 200 
+                print("num octvaes is", numOctaves)
+
 
 class button(pygame.sprite.Sprite):
      def __init__(self):
@@ -71,6 +58,11 @@ class button(pygame.sprite.Sprite):
 
 def start_screen():
     intro = True
+    gdisplay.fill(white)
+    font=pygame.font.Font(None,90)
+    scoretext=font.render("Placeholder", 10,(0,0,0))
+    gdisplay.blit(scoretext, (100, 300))
+
     while intro:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -78,21 +70,21 @@ def start_screen():
                 quit()
                 intro = False
 
-        gdisplay.fill(white)
-        font=pygame.font.Font(None,90)
-        scoretext=font.render("Placeholder", 10,(0,0,0))
-        gdisplay.blit(scoretext, (100, 300))
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
 
         button()
+        #check if click is in area of start button
         if 500+100 > mouse[0] > 500 and 550+50 > mouse[1] > 550:
             if click == (1,0,0):
                     clicked.append(button)
         if button in clicked:
+            print("in clicked")
             gdisplay.fill(white)
+            keyboard()
+            pygame.display.update()
             return
-        keyboard()
+       # keyboard()
         pygame.display.update()
         clock.tick(60)
 start_screen()
