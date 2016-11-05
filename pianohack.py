@@ -11,6 +11,7 @@ clock = pygame.time.Clock()
 
 class keyboard(pygame.sprite.Sprite):
     def __init__(self):
+            print("redrawing keyboard")
             super().__init__()
 
             whiteKeyLeft= 180
@@ -36,57 +37,74 @@ class keyboard(pygame.sprite.Sprite):
                 blackKeyLeft += 200 
                 print("num octvaes is", numOctaves)
 
-
+#def keyred():
+    #if input from keyboard == (coordinates):
+        #pygame.draw.rect(gdisplay, red, (coordinates))
+            
 class button(pygame.sprite.Sprite):
      def __init__(self):
         super().__init__()
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
-
-
+        
+        # if mouse is in button rectangle area the rectangle turns light red
         if 500+100 > mouse[0] > 500 and 550+50 > mouse[1] > 550:
             pygame.draw.rect(gdisplay, red, (500,550, 100, 50))
-
+           
         else:
             pygame.draw.rect(gdisplay, lightred, (500,550, 100, 50))
 
         font2 = pygame.font.Font("freesansbold.ttf",20)
         btext= font2.render("Start", 1,(0,0,0))
         gdisplay.blit(btext, (505, 560))
-
-
-
+        
+def main_screen():
+    crash = True
+    gdisplay.fill(white)
+    keyboard()
+    pygame.display.update()
+    while crash:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+                crash = False
+      
+        
 def start_screen():
     intro = True
-    gdisplay.fill(white)
-    font=pygame.font.Font(None,90)
-    scoretext=font.render("Placeholder", 10,(0,0,0))
-    gdisplay.blit(scoretext, (100, 300))
-
+    # if user clicks x in window the game exits
     while intro:
+        gdisplay.fill(white)
+        font=pygame.font.Font(None,90)
+        scoretext=font.render("Piano Tutor", 10,(0,0,0))
+        gdisplay.blit(scoretext, (500, 300))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
                 intro = False
-
+        
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
-
+        
         button()
-        #check if click is in area of start button
+        #if mouse is clicked within area of rectangle the screen changes
         if 500+100 > mouse[0] > 500 and 550+50 > mouse[1] > 550:
             if click == (1,0,0):
                     clicked.append(button)
         if button in clicked:
             print("in clicked")
             gdisplay.fill(white)
-            keyboard()
-            pygame.display.update()
-            return
-       # keyboard()
+            main_screen()
+            
+        
         pygame.display.update()
         clock.tick(60)
 start_screen()
+
+
+
+
 pygame.quit
 quit()
