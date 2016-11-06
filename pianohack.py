@@ -10,31 +10,29 @@ clicked = []
 clock = pygame.time.Clock()
 
 class keyboard(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self,ycoord,whiteKeyLeft, whiteKeyRight, whiteWidth, 
+            blackWidth, whiteLength, blackKeyLeft, numOctaves):
             print("redrawing keyboard")
             super().__init__()
 
-            whiteKeyLeft= 180
-            whiteKeyRight= 831
-            whiteWidth = 50
-            whiteLength = 100
-            blackKeyLeft = 220
-            numOctaves = 3
+            keySeperation = whiteWidth
+            blackLength = whiteLength * 2/3 
+
             #draw white keys with borders
-            for i in range (whiteKeyLeft, whiteKeyRight, +50):
-                pygame.draw.rect(gdisplay, white, (i,100,50,100))
-                pygame.draw.rect(gdisplay, black, (i,100,50,100), 1)
+            for i in range (whiteKeyLeft, whiteKeyRight, +keySeperation):
+                pygame.draw.rect(gdisplay, white, (i,ycoord,whiteWidth,whiteLength))
+                pygame.draw.rect(gdisplay, black, (i,ycoord,whiteWidth,whiteLength), 1)
             
             #draw black keys - each outer loop draws on octave
             for i in range (0, numOctaves):  
-                for j in range (blackKeyLeft,blackKeyLeft + 51, +50): # draw group of 2 black keys
+                for j in range (blackKeyLeft,blackKeyLeft + 51, +keySeperation): # draw group of 2 black keys
                     print("j is ", j)
-                    pygame.draw.rect(gdisplay, black, (j,100,30,55))
-                blackKeyLeft += 150
-                for k in range (blackKeyLeft, blackKeyLeft + 101, +50): #draw group of 3 black keys
+                    pygame.draw.rect(gdisplay, black, (j,ycoord,blackWidth,blackLength))
+                blackKeyLeft += keySeperation * 3
+                for k in range (blackKeyLeft, blackKeyLeft + 101, +keySeperation): #draw group of 3 black keys * 3
                     print("k is ", k)
-                    pygame.draw.rect(gdisplay, black, (k,100,30,55))
-                blackKeyLeft += 200 
+                    pygame.draw.rect(gdisplay, black, (k,ycoord,blackWidth,blackLength))
+                blackKeyLeft += keySeperation * 4 
                 print("num octvaes is", numOctaves)
 
 #def keyred():
@@ -61,7 +59,10 @@ class button(pygame.sprite.Sprite):
 def main_screen():
     crash = True
     gdisplay.fill(white)
-    keyboard()
+
+#    def __init__(self,ycoord,whiteKeyLeft, whiteKeyRight, whiteWidth, 
+#            blackWidth, whiteLength, blackKeyLeft, numOctaves):
+    keyboard(100,10,1250,43,28,175,41,4)
     pygame.display.update()
     while crash:
         for event in pygame.event.get():
