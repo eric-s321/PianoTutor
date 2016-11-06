@@ -1,5 +1,9 @@
 import pygame
+import mido
+import pygame.midi
+import time
 
+mido.set_backend('mido.backends.pygame')
 pygame.init()
 gdisplay = pygame.display.set_mode((1275,800))
 white = (255,255,255)
@@ -56,7 +60,7 @@ class button(pygame.sprite.Sprite):
         btext= font2.render("Start", 1,(0,0,0))
         gdisplay.blit(btext, (505, 560))
         
-def main_screen():
+def main_screen(inport, port_out):
     crash = True
     gdisplay.fill(white)
 
@@ -65,6 +69,9 @@ def main_screen():
     keyboard(100,10,1250,43,28,175,41,4)
     pygame.display.update()
     while crash:
+        msg = getInput(inport)
+        playNote(msg.note, msg.velocity, inport, port_out)
+     #   print(msg)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -72,7 +79,7 @@ def main_screen():
                 crash = False
       
         
-def start_screen():
+def start_screen(inport, port_out):
     intro = True
     # if user clicks x in window the game exits
     while intro:
@@ -97,14 +104,41 @@ def start_screen():
         if button in clicked:
             print("in clicked")
             gdisplay.fill(white)
-            main_screen()
+            main_screen(inport, port_out)
             
         
         pygame.display.update()
         clock.tick(60)
-start_screen()
 
 
+def playNote(note, velocity, inport, port_out):
+
+    while velocity != 0:
+        port_out.note_on(note, velocity) #64 is the key, 127 is the volume (127 is maximum volume)
+     #   time.sleep(.001)
+        keyInfo = getInput(inport)
+        velocity = keyInfo.velocity
+        note = keyInfo.note
+    port_out.note_off(note, velocity)
+
+def getInput(inport):
+    return inport.receive()
+
+
+def main():
+    pygame.midi.init()
+    port_out = pygame.midi.Output(pygame.midi.get_default_output_id()) #creates the
+    port_out.set_instrument(0) #sets the instrument to grand piano
+    port_out.note_on(60, 0)
+
+    inport = mido.open_input('Keystation 49')
+
+    start_screen(inport, port_out)
+
+    del port_out
+    pygame.midi.quit()
+
+main()
 
 
 pygame.quit
