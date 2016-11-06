@@ -11,7 +11,7 @@ def playNote(note, velocity, inport):
     port_out.set_instrument(0) #sets the instrument to grand piano
     while velocity != 0:
         port_out.note_on(note, velocity) #64 is the key, 127 is the volume (127 is maximum volume)
-        time.sleep(.001)
+        #time.sleep(.001)
         keyInfo = getInput(inport)
         velocity = keyInfo.velocity
     port_out.note_off(note, velocity)
