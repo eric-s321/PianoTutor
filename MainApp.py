@@ -5,6 +5,7 @@ import pygame
 import mido
 
 gdisplay = pygame.display.set_mode((1275,800))
+#print("oringal g display", gdisplay)
 mido.set_backend('mido.backends.pygame')
 pygame.init()
 #gdisplay = pygame.display.set_mode((1275,800))
@@ -32,7 +33,17 @@ def main_screen(inport, port_out, mainApp):
 #            blackWidth, whiteLength, blackKeyLeft, numOctaves):
     mainApp.keyboard = pianohack.keyboard(100,10,1250,43,28,175,41,4, gdisplay)
     pygame.display.update()
+
+    displayed = False
     while crash:
+        
+        if not displayed:
+            print ("writng to screen")
+            mainApp.lessonPlan.writeToScreen(mainApp.teachingMessages[0], 400, 400, 35, gdisplay)
+            pygame.display.update()
+            displayed = True
+
+
         msg = getInput(inport)
         playNote(msg.note, msg.velocity, inport, port_out)
      #   print(msg)
@@ -41,6 +52,7 @@ def main_screen(inport, port_out, mainApp):
                 pygame.quit()
                 sys.exit()
                 crash = False
+
         
 def start_screen(inport, port_out, mainApp):
     intro = True
@@ -90,6 +102,14 @@ def getInput(inport):
 
 def main():
     mainApp = MainApp(None, None, None, None)
+    mainApp.teachingMessages = open("teachingMessages.txt", "r").readlines()
+    mainApp.lessonPlan = lessonPlan.lessonPlan(gdisplay)
+ #   print(mainApp.lessonPlan.gdisplay)
+ #   message = mainApp.teachingMessages[0]
+ #   mainApp.lessonPlan.writeToScreen("test",500,600,25, gdisplay)
+#    mainApp.lessonPlan.test(1,2)
+  #  for line in mainApp.teachingMessages:
+  #       print(line)
     pygame.midi.init()
     port_out = pygame.midi.Output(pygame.midi.get_default_output_id()) #creates the
     port_out.set_instrument(0) #sets the instrument to grand piano
